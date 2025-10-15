@@ -1,0 +1,108 @@
+import re
+import bcrypt
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError
+from model.classes import Base, Alunos, InformacoesAlunos
+from datetime import datetime
+
+# Configuração do SQLite
+engine = create_engine('sqlite:///estudos1.db', echo=True)
+Session = sessionmaker(bind=engine)
+
+# Criação das tabelas (uma única vez)
+Base.metadata.create_all(engine)
+
+
+def validar_senha(senha):
+    if len(senha) < 6:
+        print("A senha é muito curta")
+        return False
+    if re.search(r'[A-Za-z]', senha) and re.search(r'[0-9]', senha):
+        return True
+    print("A senha deve ter uma letra e um número!")
+    return False
+
+def validar_email(email: str) -> bool:
+    email = email.strip()
+    padrao = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    return bool(re.fullmatch(padrao, email))
+
+def cadastro():
+    session = Session()
+    try:
+        nome = input("Digite o seu nome: ").strip()
+        email = input("Digite seu email: ").strip()
+        senha = input("Digite sua senha: ")
+
+        if not validar_senha(senha):
+            return False
+        if not validar_email(email):
+            print("Formato de email inválido!")
+            return False
+
+        existente = session.query(Alunos).filter_by(email=email).first()
+        if existente:
+            print("Esse email já está cadastrado!")
+            return False
+
+        senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+
+        novo_aluno = Alunos(nome=nome, email=email, senha=senha_hash)
+        session.add(novo_aluno)
+        session.commit()
+
+        print(f"Usuário '{nome}' cadastrado com sucesso! ID: {novo_aluno.matricula}")
+        return True
+
+    except IntegrityError:
+        session.rollback()
+        print("Erro: esse email já existe.")
+        return False
+    finally:
+        session.close()
+
+# --- Evento: cria a matrícula automaticamente ---
+@event.listens_for(Alunos, "after_insert")
+def nova_matricula(mapper, connection, target):
+    ano = datetime.now().year
+    matriculagen = f"{ano}{target.matricula:06d}"
+    connection.execute(
+        Alunos.__table__.update()
+        .where(Alunos.matricula == target.matricula)
+        .values(matricula=matriculagen)
+    )
+
+
+def login(email, senha):
+    session = Session()
+    try:
+        aluno = session.query(Alunos).filter_by(email=email).first()
+        if not aluno:
+            print("Email não encontrado!")
+            return False
+
+        if bcrypt.checkpw(senha.encode('utf-8'), aluno.senha):
+            print(f"Login bem-sucedido! Bem-vindo, {aluno.nome} (ID: {aluno.matricula})")
+            return True
+        else:
+            print("Senha incorreta!")
+            return False
+    finally:
+        session.close()
+
+if __name__ == "__main__":
+    while True:
+        print("\n1 - Cadastro\n2 - Login\n3 - Sair")
+        opcao = input("Escolha: ")
+
+        if opcao == "1":
+            cadastro()
+        elif opcao == "2":
+            email = input("Digite o email: ")
+            senha = input("Digite a senha: ")
+            login(email, senha)
+        elif opcao == "3":
+            break
+        else:
+            print("Opção inválida!")
