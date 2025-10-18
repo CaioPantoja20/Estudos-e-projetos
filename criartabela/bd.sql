@@ -1,1 +1,1 @@
-SELECT * FROM administrador;
+DELETE FROM administrador WHERE id = 1;

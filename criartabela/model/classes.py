@@ -6,14 +6,13 @@ Base = declarative_base()
 class Alunos(Base):
     __tablename__ = 'alunos'
 
-    matricula = Column(Integer, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)  # número base
+    matricula = Column(String, unique=True)  # matrícula formatada com ano
     nome = Column(String(50), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     senha = Column(LargeBinary, nullable=False)
 
-    # Relacionamento 1:1
     informacoes = relationship("InformacoesAlunos", back_populates="aluno", uselist=False)
-
 
 class InformacoesAlunos(Base):
     __tablename__ = 'informacoes_alunos_pessoais'

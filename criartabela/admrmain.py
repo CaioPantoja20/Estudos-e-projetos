@@ -23,7 +23,11 @@ def adm_senha(senhaadm):
 
 def adm_email(emailadm: str) -> bool:
     emailadm = emailadm.strip()
-    padrao = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+
+    provedores = ['gmail', 'yahoo', 'outlook', 'hotmail', 'uol', 'bol', 'icloud']
+    dominios = ['com', 'org', 'net', 'edu', 'gov', 'br']
+
+    padrao = r'^[A-Za-z0-9._%+-]+@(' + '|'.join(provedores) + r')\.(' + '|'.join(dominios) + r')$'
     return bool(re.fullmatch(padrao, emailadm))
 
 def cadastro_adm():
@@ -36,7 +40,7 @@ def cadastro_adm():
         if not adm_senha(senhaadm):
             return False
         if not adm_email(emailadm):
-            print("Formato de email inválido!")
+            print("Email inválido!")
             return False
 
         existente = session.query(Adm).filter_by(emailadm=emailadm).first()
@@ -69,14 +73,14 @@ def login_adm(emailadm, senhaadm):
     try:
         adm_obj = session.query(Adm).filter_by(emailadm=emailadm).first()
         if not adm_obj:
-            print("Email não encontrado!")
+            print("Email ou senha invalidos!")
             return False
 
         if bcrypt.checkpw(senhaadm.encode('utf-8'), adm_obj.senhaadm):
             print(f"Login bem-sucedido! Bem-vindo, {adm_obj.nomeadm} (ID: {adm_obj.id})")
             return True
         else:
-            print("Senha incorreta!")
+            print("Email ou senha invalidos!")
             return False
     finally:
         session.close()
