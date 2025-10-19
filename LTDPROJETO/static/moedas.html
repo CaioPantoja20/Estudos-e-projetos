@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <a href="index.html">
+            <img src="/static/assets/logo.png" alt="Logo WC">
+        </a>
+
+        <nav>
+            <ul>
+                <li><a href="/moedas">Moedas</a></li>
+                <li><a href="/eventos">Cadastrar Eventos</a></li>
+                <li><a href="/desafios">Cadastrar Desafios</a></li>
+                <li><a href="/itens">Cadastrar Itens</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="tabela-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nº de Matrícula</th>
+                    <th>Nome do Aluno</th>
+                    <th>Curso</th>
+                    <!-- <th>Histórico de transações do aluno</th> -->
+                    <th>Saldo Atual</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-alunos">
+                <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function carregarDadosAlunos() {
+            fetch('http://localhost:5500/alunos') // Caminho absoluto da API
+                .then(response => response.json())
+                .then(data => {
+                    const tabelaAlunos = document.getElementById('tabela-alunos');
+                    data.forEach(aluno => {
+                        const row = document.createElement('tr');
+
+                        const matriculaCell = document.createElement('td');
+                        matriculaCell.textContent = aluno.matricula;
+                        row.appendChild(matriculaCell);
+
+                        const nomeCell = document.createElement('td');
+                        nomeCell.textContent = aluno.nome;
+                        row.appendChild(nomeCell);
+
+                        const cursoCell = document.createElement('td');
+                        cursoCell.textContent = aluno.curso;
+                        row.appendChild(cursoCell);
+
+                        const saldoCell = document.createElement('td');
+                        saldoCell.textContent = aluno.wydencoin + ' moedas';
+                        row.appendChild(saldoCell);
+
+                        tabelaAlunos.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar os dados dos alunos:', error));
+        }
+
+        carregarDadosAlunos(); // Chama a função ao carregar a página
+    </script>
+</body>
+
+</html>
