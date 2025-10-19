@@ -39,13 +39,25 @@ def validar_email(email: str) -> bool:
 
     return bool(re.fullmatch(padrao, email))
 
+def inserir_curso(curso: str) -> bool:
+    curso = curso.strip()
+    if len(curso) == 0:
+        return True  # Curso é opcional
+    if re.fullmatch(r'[A-Za-zÀ-ÿ\s]+', curso):
+        return True
+    print("Curso inválido! Use apenas letras e espaços.")
+    return False
+
 def cadastro():
     session = Session()
     try:
         nome = input("Digite o seu nome: ").strip()
+        curso = input("Digite seu curso (opcional): ").strip()
         email = input("Digite seu email: ").strip()
         senha = input("Digite sua senha: ")
-
+        
+        if not inserir_curso(curso):
+            return False       
         if not validar_senha(senha):
             return False
         if not validar_email(email):
@@ -59,7 +71,7 @@ def cadastro():
 
         senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
 
-        novo_aluno = Alunos(nome=nome, email=email, senha=senha_hash)
+        novo_aluno = Alunos(nome=nome, email=email, senha=senha_hash,curso=curso)
         session.add(novo_aluno)
         session.flush()  # Garante que a Matricula seja gerada
         print(f"Usuário '{nome}' cadastrado com sucesso! Matricula: {novo_aluno.matricula}")

@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Teachers:ital,wght@0,400..800;1,400..800&display=swap');
+
+:root {
+    --cor-primaria: #8B0061;
+    --cor-secundaria: #FF8C00;
+    --texto-escuro: #000000;
+    --cor-fundo-branco: #f6f6f6;
+    --cor-fundo-preto: #000000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: var(--cor-fundo-branco)
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'teachers', sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 2vh 27vh;;
+}
+
+header a {
+    flex-grow: 0;
+    width: fit-content; 
+}
+
+header a img {
+    width: 100%;
+    max-width: 50px;
+    height: auto;
+}
+
+nav {
+    flex-grow: 0;
+    margin-left: 40px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--cor-primaria);
+    font-weight: bold;
+    font-size: 20px;
+    position: relative; 
+    transition: color 0.3s ease; 
+}
+
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--cor-secundaria);
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--cor-secundaria);
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/*Tabela */
+
+.tabela-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 25vh 0 25vh;
+}
+
+table {
+    width: 100%;
+    max-width: 1400px;
+    border-collapse: collapse;
+    border: 3px solid var(--cor-primaria);
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: white;
+}
+
+thead {
+    background-color: var(--cor-primaria);
+    color: white;
+    display: table;
+    width: 100%;
+    table-layout: fixed; 
+}
+
+th {
+    padding: 14px 18px;
+    text-align: left;
+    border: 1px solid var(--cor-primaria);
+    font-weight: 600;
+    background-color: var(--cor-primaria);
+    border-top: none;
+    border-bottom: none;
+}
+
+th:first-child {
+    border-left: none;
+}
+
+th:last-child {
+    border-right: none;
+    padding-right: 35px;
+}
+
+tbody {
+    display: block; 
+    max-height: 300px; 
+    overflow-y: scroll;
+    width: 100%;
+}
+
+tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-bottom: 1px solid #ddd;
+    background-color: white;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+td {
+    padding: 12px 18px;
+    text-align: left;
+    border-right: 1px solid var(--cor-primaria);
+    background-color: white;
+    color: var(--texto-escuro);
+}
+
+td:first-child {
+    border-left: 1px solid var(--cor-primaria);
+}
+
+td:last-child {
+    border-right: none;
+}
+
+.historico-link {
+    color: var(--cor-primaria);
+    text-decoration: underline;
+    transition: color 0.3s;
+    background-color: transparent;
+    font-weight: 600;
+}
+
+.historico-link:hover {
+    color: var(--cor-secundaria);
+}

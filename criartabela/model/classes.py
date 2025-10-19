@@ -9,6 +9,8 @@ class Alunos(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)  # número base
     matricula = Column(String, unique=True)  # matrícula formatada com ano
     nome = Column(String(50), nullable=False)
+    curso = Column(String(50), nullable=True)
+    wydencoin = Column(Integer, default=0)
     email = Column(String(100), unique=True, nullable=False)
     senha = Column(LargeBinary, nullable=False)
 
